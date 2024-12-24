@@ -1,0 +1,62 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+double f(double x) {
+    return x * x - 2; // Пример функции: f(x) = x^2 - 2 (корень в √2)
+}
+
+double g(double x) {
+    return sqrt(2); // Преобразование для метода простых итераций
+}
+
+double MethodPolovini(double a, double b, double tol) {
+    double c;
+    while ((b - a) >= tol) {
+        c = (a + b) / 2;
+        if (f(c) == 0.0) break; 
+        (f(c) * f(a) < 0) ? b = c : a = c; 
+    }
+    return c; 
+}
+
+double MetodIter(double x0, double tol) {
+    double x1;
+    do {
+        x1 = g(x0); 
+        x0 = x1;
+    } while (std::abs(g(x0) - x0) >= tol); 
+    return x1;
+}
+
+int main() {
+    double a = 0, b = 2; // Интервал для метода половинного деления
+    double tol = 1e-6; // Допустимая погрешность
+
+    double root_bisection = MethodPolovini(a, b, tol);
+    cout << "Корень методом половинного деления: " << root_bisection << endl;
+
+    double x0 = 1.0; // Начальное приближение для метода простых итераций
+    double root_iteration = MetodIter (x0, tol);
+    cout << "Корень методом простых итераций: " << root_iteration << endl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    return 0;
+}
