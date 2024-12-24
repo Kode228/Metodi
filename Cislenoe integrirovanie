@@ -1,0 +1,32 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+// Численое интергирование
+double f(double x) {
+    return sin(x); 
+}
+// Функция для численного интегрирования методом трапеций
+double trapezoidal(double (*func)(double), double a, double b, int n) {
+    double h = (b - a) / n; // Шаг
+    double sum = 0.5 * (func(a) + func(b)); // Начальная сумма
+
+    for (int i = 1; i < n; ++i) {
+        sum += func(a + i * h); // Добавляем значения функции в промежуточных точках
+    }
+    return sum * h; // Умножаем на шаг
+}
+
+int main() {
+    double a = 0; // Нижний предел интегрирования
+    double b = M_PI; // Верхний предел интегрирования
+    int n = 1000; // Количество разбиений
+
+    double result = trapezoidal(f, a, b, n);
+    cout << "Результат интегрирования: " << result << endl;
+
+
+
+
+
+    return 0;
+}
