@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<double> cubicSplineInterpolate(const vector<double>& x, const vector<double>& y, const vector<double>& x_interp) {
+    int n = x.size();
+    vector<double> a = y;
+    vector<double> b(n - 1);
+    vector<double> d(n - 1);
+    vector<double> h(n - 1);
+    // Вычисляем h
+    for (int i = 0; i < n - 1; i++) {
+        h[i] = x[i + 1] - x[i];
+    }
+    // Система уравнений для вычисления коэффициентов
+    vector<double> alpha(n - 1);
+    for (int i = 1; i < n - 1; i++) {
+        alpha[i] = (3.0 / h[i]) * (a[i + 1] - a[i]) - (3.0 / h[i - 1]) * (a[i] - a[i - 1]);
+    }
+    vector<double> c(n);
+    vector<double> l(n);
+    vector<double> mu(n);
+    vector<double> z(n);
+
+    l[0] = 1.0;
+    mu[0] = 0.0;
+    z[0] = 0.0;
+
+  
+    // Решаем систему трёхдиагональной матрицы
+    for (int i = 1; i < n - 1; i++) {
+        l[i] = 2 * (x[i + 1] - x[i - 1]) - h[i - 1] * mu[i - 1];
+        mu[i] = h[i] / l[i];
+        z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
+    }
+
+    l[n - 1] = 1.0;
+    z[n - 1] = 0.0;
+    c[n - 1] = 0.0;
+
+    // Обратная подстановка
+    for (int j = n - 2; j >= 0; j--) {
+        c[j] = z[j] - mu[j] * c[j + 1];
+        b[j] = (a[j + 1] - a[j]) / h[j] - h[j] * (c[j + 1] + 2 * c[j]) / 3;
+        d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
+    }
+
+    // Интерполяция
+    vector<double> result;
+    for (double xi : x_interp) {
+        
+        int i;
+        for (i = 0; i < n - 1; i++) {
+            if (xi <= x[i + 1]) {
+                break;
+            }
+        }
+        if (i == n - 1) continue;
+        double dx = xi - x[i];
+        double interpolated_value = a[i] + b[i] * dx + c[i] * dx * dx + d[i] * dx * dx * dx;
+        result.push_back(interpolated_value);
+    }
+
+    return result;
+}
+
+int main() {
+    vector<double> x = {0.0, 1.0, 2.0, 3.0, 4.0};
+    vector<double> y = {1.0, 2.0, 0.0, 2.0, 3.0};
+    vector<double> x_interp = {0.5, 1.5, 2.5, 3.5};
+
+    vector<double> y_interp = cubicSplineInterpolate(x, y, x_interp);
+
+    for (size_t i = 0; i < y_interp.size(); ++i) {
+        cout << "Interpolated value at " << x_interp[i] << " is " << y_interp[i] << endl;
+    }
+
+
+
+
+
+
+
+
+    
+    return 0;
+}
