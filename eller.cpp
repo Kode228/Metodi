@@ -13,7 +13,7 @@ void Metodeller(double x0, double y0, double h, double x_end) {
     double x = x0;
     double y = y0;
     cout << fixed << setprecision(4);
-    cout << "x\ty\n";
+    cout << "x\ty\n"; 
     cout << x << "\t" << y << endl;
 
     while (x < x_end) {
