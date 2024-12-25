@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include <vector>
 #include <iomanip>
-
 using namespace std;
 
 // f(x, y)
@@ -13,7 +12,6 @@ double f(double x, double y) {
 void Metodeller(double x0, double y0, double h, double x_end) {
     double x = x0;
     double y = y0;
-
     cout << fixed << setprecision(4);
     cout << "x\ty\n";
     cout << x << "\t" << y << endl;
@@ -21,7 +19,6 @@ void Metodeller(double x0, double y0, double h, double x_end) {
     while (x < x_end) {
         y += h * f(x, y); 
         x += h;          
-
         cout << x << "\t" << y << endl; 
     }
 }
