@@ -1,101 +1,96 @@
 ﻿#include <iostream>
+#include <string>
+
 using namespace std;
 
-const int LIST_SIZE = 10;
-// Реализация ввода пользователем списка из 10 элементов
-void getUserInput(int list[]) {
-    cout << "Введите 10 целых чисел:" << endl;
-    for (int i = 0; i < LIST_SIZE; ++i) {
-        cout << "Элемент " << i + 1 << ": ";
-        cin >> list[i];
-    }
-}
+class String {
+private:
+    char* str;
+    int len;  
+    static int objectCount; 
 
-
-// Сортировка пузырьком
-void bubbleSort(int list[]) {
-    for (int i = 0; i < LIST_SIZE - 1; ++i) {
-        for (int j = 0; j < LIST_SIZE - i - 1; ++j) {
-            if (list[j] > list[j + 1]) {
-               swap(list[j], list[j + 1]);
-            }
+    static int getStringLength(const char* s) {
+        int length = 0;
+        while (s[length] != '\0') {
+            length++;
         }
+        return length;
     }
-}
 
-// Сортировка выбором
-void selectionSort(int list[]) {
-    for (int i = 0; i < LIST_SIZE - 1; ++i) {
-        int minIndex = i;
-        for (int j = i + 1; j < LIST_SIZE; ++j) {
-            if (list[j] < list[minIndex]) {
-                minIndex = j;
-            }
+    static void copyString(char* dest, const char* source) {
+        int i = 0;
+        while (source[i] != '\0') {
+            dest[i] = source[i];
+            i++;
         }
-        
-        if (minIndex != i) {
-            swap(list[i], list[minIndex]);
-        }
+        dest[i] = '\0';
     }
-}
 
-// Сортировка вставками
-void insertionSort(int list[]) {
-    for (int i = 1; i < LIST_SIZE; ++i) {
-        int key = list[i];
-        int j = i - 1;
-
-     
-        while (j >= 0 && list[j] > key) {
-            list[j + 1] = list[j];
-            j = j - 1;
-        }
-        list[j + 1] = key;
+public:
+    String() : String(80) {
+        cout << "Конструктор по умолчанию (80 символов)" << endl;
     }
-}
 
-
-// Вывод пользователю отсортированного списка
-void printList(const int list[]) {
-    cout << "Отсортированный список:" << endl;
-    for (int i = 0; i < LIST_SIZE; ++i) {
-        cout << list[i] << " ";
+    String(int size) : str(new char[size + 1]), len(size) {
+        cout << "Конструктор произвольного размера (" << size << " символов)" << endl;
+        str[0] = '\0';
+        objectCount++;
     }
-    cout << endl;
-}
+
+   String(const char* initialString) : String(getStringLength(initialString)) {
+        cout << "Конструктор из строки: " << initialString << endl;
+        copyString(str, initialString);
+    }
+
+
+   ~String() {
+        cout << "Деструктор: удаление строки" << endl;
+        delete[] str;
+        objectCount--;
+    }
+
+    void inputString() {
+        cout << "Введите строку: ";
+        cin.getline(str, len + 1);
+    }
+
+    void printString() const {
+        cout << "Строка: " << str << endl;
+    }
+
+    static int getObjectCount() {
+        return objectCount;
+    }
+
+};
+int String::objectCount = 0;
 
 int main() {
     setlocale(LC_ALL, "Russian");
+    cout << "Количество объектов String до создания: " << String::getObjectCount() << endl;
 
-       int list[LIST_SIZE]; 
-    getUserInput(list);
+    String str1;           
+    str1.printString();
+    cout << "Количество объектов String после str1: " << String::getObjectCount() << endl;
 
-    // Меню выбора сортировки
-    int choice;
- 
-    cout << "\nВыберите алгоритм сортировки:" << endl;
-    cout << "1. Сортировка пузырьком" << endl;
-    cout << "2. Сортировка выбором" << endl;
-    cout << "3. Сортировка вставками" << endl;
-    cout << "Ваш выбор: ";
-    cin >> choice;
-       
-    switch (choice) {
-    case 1:
-        bubbleSort(list);
-        break;
-    case 2:
-        selectionSort(list);
-        break;
-    case 3:
-        insertionSort(list);
-        break;
-    default:
-        cout << "Неверный выбор. Выход из программы." << endl;
-        return 1;
+
+    String str2(50);        
+    str2.inputString();
+    str2.printString();
+    cout << "Количество объектов String после str2: " << String::getObjectCount() << endl;
+
+    String str3("Привет, мир!");
+    str3.printString();
+    cout << "Количество объектов String после str3: " << String::getObjectCount() << endl;
+
+    {
+        String str4("Внутри блока");
+        str4.printString();
+        cout << "Количество объектов String после str4: " << String::getObjectCount() << endl;
     }
+    cout << "Количество объектов String после блока: " << String::getObjectCount() << endl;
 
-    printList(list);
 
+    cout << "Конец программы" << endl;
     return 0;
 }
